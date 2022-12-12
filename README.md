@@ -90,3 +90,48 @@ func main() {
 	}
 }
 ```
+
+
+## Example Encrypt Multiple Files
+
+```
+// ZipFilesWithEncrypt encrypts several files at once. Absolve paths are filenames and files. 
+func ZipFilesWithEncrypt(fileName string, files []string, password string) error {
+	zipFile, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		return err
+	}
+	defer zipFile.Close()
+
+	zipw := zip.NewWriter(zipFile)
+	for _, f := range files {
+		if err := appendFiles(f, password, zipw); err != nil {
+			return err
+		}
+	}
+	if err = zipw.Close(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func appendFiles(filename, password string, zipw *zip.Writer) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	name := path.Base(filename)
+
+	wr, err := zipw.Encrypt(name, password, zip.StandardEncryption)
+	if err != nil {
+		return err
+	}
+
+	if _, err := io.Copy(wr, file); err != nil {
+		return err
+	}
+	return nil
+}
+```
