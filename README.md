@@ -13,7 +13,7 @@ zip.AES256Encryption
 
 ## Warning
 
-Zip Standard Encryption isn't actually secure.
+Zip Standard Encryption isn't actually secure(https://github.com/alexmullins/zip/issues/17).
 Unless you have to work with it, please use AES encryption instead.
 
 ## Example Encrypt Zip
